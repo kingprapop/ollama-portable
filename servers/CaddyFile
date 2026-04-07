@@ -1,0 +1,12 @@
+:47474 {
+    handle /api/* {
+        uri strip_prefix /api
+        reverse_proxy localhost:11434
+    }
+
+    handle {
+        root * ./build
+        file_server
+        try_files {path} /index.html
+    }
+}
