@@ -1,0 +1,14 @@
+.DS_Store
+/webui/node_modules
+/webui/build
+/webui/dist
+/webui/.svelte-kit
+/webui/package
+/webui/.env
+/webui/.env.*
+/webui/!.env.example
+/webui/vite.config.js.timestamp-*
+/webui/vite.config.ts.timestamp-*
+/webui/test-results
+/webui/ai/models
+/webui/sessions/*.json
