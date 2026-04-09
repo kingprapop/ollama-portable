@@ -319,7 +319,7 @@ type RootTranslation = {
 	 */
 	mainGpu: string
 	/**
-	 * M​e​s​s​a​g​e​ ​o​f​ ​t​h​e​ ​d​a​y
+	 * W​e​l​c​o​m​e​ ​t​o​ ​O​l​l​a​m​a​ ​P​o​r​t​a​b​l​e
 	 */
 	messageOfTheDay: string
 	/**
@@ -364,7 +364,7 @@ type RootTranslation = {
 	 */
 	modelsFilterHelp: string
 	/**
-	 * M​o​t​d
+	 * H​i​ ​=​)
 	 */
 	motd: string
 	/**
@@ -998,7 +998,7 @@ The completion in progress will stop
 	 */
 	mainGpu: () => LocalizedString
 	/**
-	 * Message of the day
+	 * Welcome to Ollama Portable
 	 */
 	messageOfTheDay: () => LocalizedString
 	/**
@@ -1042,7 +1042,7 @@ The completion in progress will stop
 	 */
 	modelsFilterHelp: () => LocalizedString
 	/**
-	 * Motd
+	 * Hi =)
 	 */
 	motd: () => LocalizedString
 	/**

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setting up Ollama Portable...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .box { text-align: center; }
+        h2 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+        p  { color: #888; font-size: 0.9rem; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2>⚙️ Configuring Ollama Portable...</h2>
+    <p id="status">Loading settings files...</p>
+</div>
+<script>
+    async function setup() {
+        
+        const status = document.getElementById('status');
+
+        try {
+            // ── Load servers.json ─────────────────────────────
+            status.textContent = 'Loading servers settings...';
+            const serversRes = await fetch('/settings/hollama-servers.json');
+            if (!serversRes.ok) throw new Error('Could not load hollama-servers.json');
+            const servers = await serversRes.json();
+
+            // ── Load preferences.json ─────────────────────────
+            status.textContent = 'Loading preferences settings';
+            const prefsRes = await fetch('/settings/hollama-preferences.json');
+            if (!prefsRes.ok) throw new Error('Could not load hollama-preferences.json');
+            const preferences = await prefsRes.json();
+
+            // ── Load sessions.json ────────────────────────────
+            status.textContent = 'Loading sessions settings';
+            const sessionsRes = await fetch('/settings/hollama-sessions.json');
+            if (!sessionsRes.ok) throw new Error('Could not load hollama-sessions.json');
+            const sessions = await sessionsRes.json();
+
+            // ── Write to localStorage ─────────────────────────
+            status.textContent = 'Writing settings to browser...';
+
+            // Always overwrite servers so URL is always correct
+            localStorage.setItem('hollama-servers', JSON.stringify(servers));
+
+            // Only write preferences if not already set on this machine
+            const existingPrefs = localStorage.getItem('hollama-preferences');
+            if (!existingPrefs) {
+                
+            }
+
+            localStorage.setItem('hollama-preferences', JSON.stringify(preferences));
+
+            // Only write sessions if not already set on this machine
+            // so existing chat history on this machine is not wiped
+            const existingSessions = localStorage.getItem('hollama-sessions');
+            if (!existingSessions) {
+                
+            }
+            
+            localStorage.setItem('hollama-sessions', JSON.stringify(sessions));
+
+            status.textContent = '✅ Done! Loading';
+            setTimeout(() => { window.location.href = '/motd'; }, 800);
+
+        } catch(e) {
+            status.style.color = '#ff6b6b';
+            status.textContent = '❌ Error: ' + e.message;
+            console.error(e);
+        }
+    }
+
+    setup();
+</script>
+</body>
+</html>

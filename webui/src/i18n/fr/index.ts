@@ -82,7 +82,7 @@ const fr = {
 	modelWasDownloaded: '{model:string} a été téléchargé',
 	modelsFilter: 'Filtre des noms de modèles',
 	modelsFilterHelp: 'Masque les noms de modèles ne commençant pas par le filtre',
-	motd: 'Motd',
+	motd: 'Hi =)',
 	name: 'Nom',
 	newKnowledge: 'Nouvelle connaissance',
 	newSession: 'Nouvelle session',
