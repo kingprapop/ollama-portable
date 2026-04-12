@@ -7,15 +7,47 @@
 **a portable web chat interface for running local LLMs**
 
 #### What is this?
-
-Ollama Portable combines [Ollama](https://github.com/ollama/ollama), [Hollama](https://github.com/fmaclen/hollama) and [Caddy](https://github.com/caddyserver/caddy) into a single, self-contained package. 
+Ollama Portable combines [Ollama](https://github.com/ollama/ollama), [Hollama](https://github.com/fmaclen/hollama) and [Caddy](https://github.com/caddyserver/caddy) into a single, self-contained package.
 Everything runs directly from one folder, no external dependencies or system changes required.
-
 No installation. No setup. No admin rights needed.
 
-#### Why use Ollama Portable?
+---
 
-- **Fully portable** – runs entirely from your drive with zero system modifications. All models and data are stored on the same folder.
+#### Download
+
+**Windows**
+
+Download the zip file on the [releases](https://github.com/ekhos-ai/ollama-portable/releases) page and extract `ollama-portable-windows-amd64.zip` to any drive you've chosen.
+
+To start Ollama Portable servers and load the default UI page for chatting, open CMD or Windows Explorer and execute:
+
+```bat
+start.bat
+```
+
+---
+
+**Mac OS**
+
+Download the zip file on the [releases](https://github.com/ekhos-ai/ollama-portable/releases) page and extract `ollama-portable-mac-amd64.zip` to any drive you've chosen.
+
+To start Ollama Portable servers and load the default UI page for chatting, open Terminal and execute:
+
+```sh
+chmod +x start.sh
+./start.sh
+```
+
+---
+
+#### AI Model
+
+Ollama Portable comes with **Gemma4** as the default AI model. You can add or download additional AI models from the settings page.
+
+---
+
+#### Why use Ollama Portable?
+- **Fully portable** – runs entirely from your drive with zero system modifications. All models and data are stored in the same folder.
 - **Works in restricted environments** – no admin rights or IT approval required, simply extract the ZIP and launch.
 - **USB & external drive ready** – carry your models, settings, and chat history anywhere.
 - **Fully offline after setup** – once models are downloaded, everything runs locally and your data never leaves the machine.
@@ -23,8 +55,7 @@ No installation. No setup. No admin rights needed.
 - **Runs in isolation** – does not interfere with any existing Ollama or Hollama installations.
 - **Perfect for quick start** – ideal for exploring local LLMs or running experiments without committing to a full install.
 
+---
+
 #### About
-
-Built by the team behind [EKHOS AI](https://ekhos.ai) - Professional-grade Local AI transcription app designed for users who prioritize privacy, security, and full data control.
-
-
+Built by the team behind [EKHOS AI](https://ekhos.ai) — Professional-grade Local AI transcription app designed for users who prioritize privacy, security, and full data control.
