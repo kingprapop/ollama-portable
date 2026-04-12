@@ -51,7 +51,6 @@ Ollama Portable comes with **Gemma4** as the default AI model. You can add or do
 - **Works in restricted environments** – no admin rights or IT approval required, simply extract the ZIP and launch.
 - **USB & external drive ready** – carry your models, settings, and chat history anywhere.
 - **Fully offline after setup** – once models are downloaded, everything runs locally and your data never leaves the machine.
-- **No command line required** – launch everything with a single double-click and the web UI handles the rest.
 - **Runs in isolation** – does not interfere with any existing Ollama or Hollama installations.
 - **Perfect for quick start** – ideal for exploring local LLMs or running experiments without committing to a full install.
 
