@@ -42,7 +42,7 @@ chmod +x start.sh
 
 #### AI Model
 
-Ollama Portable comes with **Gemma4** as the default AI model. You can add or download additional AI models from the settings page.
+Ollama Portable comes with **Gemma4** as the default AI model. You can add or download additional AI models from the settings page later.
 
 ---
 
