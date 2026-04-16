@@ -113,12 +113,12 @@
 </script>
 
 <svelte:head>
-	{#if env.PUBLIC_PLAUSIBLE_DOMAIN}
+	{#if env?.PUBLIC_PLAUSIBLE_DOMAIN}
 		<script
 			defer
-			data-domain={env.PUBLIC_PLAUSIBLE_DOMAIN}
-			data-api={env.PUBLIC_PLAUSIBLE_API}
-			src={env.PUBLIC_PLAUSIBLE_SRC}
+			data-domain={env?.PUBLIC_PLAUSIBLE_DOMAIN}
+			data-api={env?.PUBLIC_PLAUSIBLE_API}
+			src={env?.PUBLIC_PLAUSIBLE_SRC}
 		></script>
 	{/if}
 </svelte:head>

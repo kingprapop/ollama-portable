@@ -37,27 +37,70 @@ echo ========================================
 echo.
 
 :: ========================================
+::   FIRST RUN: DOWNLOAD OLLAMA BINARIES
+:: ========================================
+set "SENTINEL=%BASE%servers\.downloaded"
+
+if not exist "%SENTINEL%" (
+    echo [Setup] Downloading Ollama binaries - this only happens once...
+    echo.
+
+    echo   Downloading ollama-windows-amd64.zip...
+    curl -L --progress-bar -o "%BASE%ollama-windows-amd64.zip" ^
+        "https://github.com/ollama/ollama/releases/download/v0.20.7/ollama-windows-amd64.zip"
+
+    if errorlevel 1 (
+        echo [!] Failed to download ollama-windows-amd64.zip
+        pause
+        exit /b 1
+    )
+
+    echo   Downloading ollama-windows-amd64-rocm.zip...
+    curl -L --progress-bar -o "%BASE%ollama-windows-amd64-rocm.zip" ^
+        "https://github.com/ollama/ollama/releases/download/v0.20.7/ollama-windows-amd64-rocm.zip"        
+        
+    if errorlevel 1 (
+        echo [!] Failed to download ollama-windows-amd64-rocm.zip
+        pause
+        exit /b 1
+    )
+
+    echo.
+    echo   Extracting ollama-windows-amd64 to servers\...
+    powershell -NoProfile -Command ^
+        "Expand-Archive -Path '%BASE%ollama-windows-amd64.zip' -DestinationPath '%BASE%servers' -Force"
+    if errorlevel 1 (
+        echo [!] Failed to extract ollama-windows-amd64.zip
+        pause
+        exit /b 1
+    )
+    del /q "%BASE%ollama-windows-amd64.zip"
+
+    echo.
+    echo   Extracting ollama-windows-amd64-rocm.zip to servers\...
+    powershell -NoProfile -Command ^
+        "Expand-Archive -Path '%BASE%ollama-windows-amd64-rocm.zip' -DestinationPath '%BASE%servers' -Force"
+    if errorlevel 1 (
+        echo [!] Failed to extract ollama-windows-amd64-rocm.zip
+        pause
+        exit /b 1
+    )
+    del /q "%BASE%ollama-windows-amd64-rocm.zip"
+
+    :: Mark as done so this block never runs again
+    echo. > "%SENTINEL%"
+
+    echo.
+    echo   Download and extraction complete.
+    echo.
+)
+
+:: ========================================
 ::   CHECK FILES EXIST
 :: ========================================
-if not exist "%BASE%servers\caddy.exe" (
-    echo [!] caddy.exe not found at %BASE%caddy.exe
-    echo     Download from https://github.com/caddyserver/caddy/releases/latest
-    echo     Get caddy_x.x.x_windows_amd64.zip
-    pause
-    exit /b 1
-)
-
-if not exist "%BASE%servers\ollama.exe" (
-    echo [!] ollama.exe not found at %BASE%programs\ollama.exe
-    echo     Download from https://github.com/ollama/ollama/releases/latest
-    echo     Get ollama-windows-amd64.zip
-    pause
-    exit /b 1
-)
-
 if not exist "%BASE%webui\build\index.html" (
-    echo [!] Ollama Portable build not found at %BASE%build\index.html
-    echo     Copy your build folder to %BASE%build\
+    echo [!] Ollama Portable build not found at %BASE%webui\build\index.html
+    echo     Copy your build folder to %BASE%webui\build\
     pause
     exit /b 1
 )
@@ -79,7 +122,7 @@ if %errorlevel% neq 0 (
 :: ========================================
 ::   START OLLAMA
 :: ========================================
-echo [1/3] Starting Ollama server...
+echo [1/4] Starting Ollama server...
 
 tasklist | find /i "ollama.exe" >nul
 if not errorlevel 1 (
@@ -99,9 +142,34 @@ echo       Ollama is ready.
 echo.
 
 :: ========================================
+::   FIRST RUN: PULL DEFAULT MODEL
+:: ========================================
+set "MODEL_SENTINEL=%BASE%models\.gemma4-pulled"
+
+if not exist "%MODEL_SENTINEL%" (
+    echo [2/4] Downloading default model gemma4:e2b-it-q4_K_M...
+    echo       This only happens once. Please wait...
+    echo.
+    "%BASE%servers\ollama.exe" pull gemma4:e2b-it-q4_K_M
+    if errorlevel 1 (
+        echo [!] Failed to download model gemma4:e2b-it-q4_K_M
+        echo     Check your internet connection and try again.
+        pause
+        exit /b 1
+    )
+    echo. > "%MODEL_SENTINEL%"
+    echo.
+    echo       Model downloaded successfully.
+    echo.
+) else (
+    echo [2/4] Default model already downloaded, skipping...
+    echo.
+)
+
+:: ========================================
 ::   START CADDY
 :: ========================================
-echo [2/3] Starting Caddy web server...
+echo [3/4] Starting Caddy web server...
 
 tasklist | find /i "caddy.exe" >nul
 if not errorlevel 1 (
@@ -117,12 +185,12 @@ echo.
 :: ========================================
 ::   OPEN BROWSER
 :: ========================================
-echo [3/3] Opening Ollama Portable in browser...
+echo [4/4] Opening Ollama Portable in browser...
 start "" http://localhost:47474/autosetup.html
 echo.
 echo ========================================
 echo   Ollama Portable is ready!
-echo   URL  : http://localhost:47474
+echo   URL  : http://localhost:47474/autosetup.html
 echo.
 echo ========================================
 echo.
@@ -152,4 +220,3 @@ timeout /t 2 /nobreak >nul
 
 echo All servers stopped. Goodbye!
 exit /b 0
-

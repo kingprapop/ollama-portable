@@ -203,7 +203,7 @@
 					class="duration-25 flex items-center gap-3 px-4 py-3 text-sm font-medium text-muted transition-colors hover:text-active"
 				>
 					<img src="/favicon.png" class="h-4 w-4" />
-					Team
+					Team - EKHOS AI
 				</a>
 
 				<button
