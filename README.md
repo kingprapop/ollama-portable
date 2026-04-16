@@ -57,4 +57,4 @@ Ollama Portable comes with **Gemma4** as the default AI model. You can add or do
 ---
 
 #### About
-Built by the team behind [EKHOS AI](https://ekhos.ai) - a professional-grade local AI transcription app for users who value privacy, security, and complete control over their data.
+Built by the team behind [EKHOS AI](https://ekhos.ai) - a professional-grade local AI transcription app delivering unlimited transcription, high accuracy, and secure data control for professionals in legal, medical, and other privacy demanding workflows.
