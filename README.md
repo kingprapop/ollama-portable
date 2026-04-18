@@ -13,8 +13,6 @@ No installation. No setup. No admin rights needed.
 
 ---
 
-#### Download
-
 **Windows**
 
 Download the zip file on the [releases](https://github.com/ekhos-ai/ollama-portable/releases) page and extract `ollama-portable-windows-amd64.zip` to any drive you've chosen.
