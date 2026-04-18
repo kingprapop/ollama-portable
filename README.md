@@ -19,7 +19,8 @@ No installation. No setup. No admin rights needed.
 
 Download the zip file on the [releases](https://github.com/ekhos-ai/ollama-portable/releases) page and extract `ollama-portable-windows-amd64.zip` to any drive you've chosen.
 
-To start Ollama Portable servers and load the default UI page for chatting, open CMD or Windows Explorer and execute:
+To start the Ollama Portable server and open the default chat UI, open CMD or Windows Explorer, then run start.bat
+Note: On first launch, it will automatically download Ollama and the default Gemma 4 model.
 
 ```bat
 start.bat
@@ -31,7 +32,8 @@ start.bat
 
 Download the zip file on the [releases](https://github.com/ekhos-ai/ollama-portable/releases) page and extract `ollama-portable-mac-amd64.zip` to any drive you've chosen.
 
-To start Ollama Portable servers and load the default UI page for chatting, open Terminal and execute:
+To start the Ollama Portable server and open the default chat UI, open Terminal then run start.sh
+Note: On first launch, it will automatically download Ollama and the default Gemma 4 model.
 
 ```sh
 chmod +x start.sh
