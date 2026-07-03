@@ -9,7 +9,7 @@ set "BASE=%~dp0"
 
 :: Create folders if they don't exist yet
 if not exist "%BASE%servers"                mkdir "%BASE%servers"
-if not exist "%BASE%models"                  mkdir "%BASE%models"
+if not exist "%BASE%models"                 mkdir "%BASE%models"
 if not exist "%BASE%servers\config\local"   mkdir "%BASE%servers\config\local"
 if not exist "%BASE%servers\config\roaming" mkdir "%BASE%servers\config\roaming"
 
@@ -37,63 +37,123 @@ echo ========================================
 echo.
 
 :: ========================================
-::   FIRST RUN: DOWNLOAD OLLAMA BINARIES
+::    FETCH LATEST OLLAMA VERSION
 :: ========================================
-set "SENTINEL=%BASE%servers\.downloaded"
+echo Checking for latest Ollama version...
+for /f "delims=" %%I in ('powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $r = Invoke-RestMethod -Uri 'https://api.github.com/repos/ollama/ollama/releases/latest'; $r.tag_name"') do set "OLLAMA_LATEST=%%I"
 
-if not exist "%SENTINEL%" (
-    echo [Setup] Downloading Ollama binaries - this only happens once...
-    echo.
-
-    echo   Downloading ollama-windows-amd64.zip...
-    curl -L --progress-bar -o "%BASE%ollama-windows-amd64.zip" ^
-        "https://github.com/ollama/ollama/releases/download/v0.20.7/ollama-windows-amd64.zip"
-
-    if errorlevel 1 (
-        echo [!] Failed to download ollama-windows-amd64.zip
-        pause
-        exit /b 1
-    )
-
-    echo   Downloading ollama-windows-amd64-rocm.zip...
-    curl -L --progress-bar -o "%BASE%ollama-windows-amd64-rocm.zip" ^
-        "https://github.com/ollama/ollama/releases/download/v0.20.7/ollama-windows-amd64-rocm.zip"        
-        
-    if errorlevel 1 (
-        echo [!] Failed to download ollama-windows-amd64-rocm.zip
-        pause
-        exit /b 1
-    )
-
-    echo.
-    echo   Extracting ollama-windows-amd64 to servers\...
-    powershell -NoProfile -Command ^
-        "Expand-Archive -Path '%BASE%ollama-windows-amd64.zip' -DestinationPath '%BASE%servers' -Force"
-    if errorlevel 1 (
-        echo [!] Failed to extract ollama-windows-amd64.zip
-        pause
-        exit /b 1
-    )
-    del /q "%BASE%ollama-windows-amd64.zip"
-
-    echo.
-    echo   Extracting ollama-windows-amd64-rocm.zip to servers\...
-    powershell -NoProfile -Command ^
-        "Expand-Archive -Path '%BASE%ollama-windows-amd64-rocm.zip' -DestinationPath '%BASE%servers' -Force"
-    if errorlevel 1 (
-        echo [!] Failed to extract ollama-windows-amd64-rocm.zip
-        pause
-        exit /b 1
-    )
-    del /q "%BASE%ollama-windows-amd64-rocm.zip"
-
-    :: Mark as done so this block never runs again
-    echo. > "%SENTINEL%"
-
-    echo.
-    echo   Download and extraction complete.
-    echo.
+if "%OLLAMA_LATEST%"=="" (
+    echo [!] Failed to fetch Ollama version from GitHub. Skipping check...
+    goto CHECK_CADDY
 )
+
+set "OLLAMA_SENTINEL=%BASE%servers\.downloaded_ollama_%OLLAMA_LATEST%"
+
+:: Check if Ollama has EVER been downloaded
+dir /b "%BASE%servers\.downloaded_ollama_*" >nul 2>&1
+if errorlevel 1 (
+    echo [Setup] First run: Auto-downloading Ollama %OLLAMA_LATEST%...
+    goto DOWNLOAD_OLLAMA
+)
+
+:: Check if already up to date
+if exist "%OLLAMA_SENTINEL%" (
+    echo Ollama is up to date ^(%OLLAMA_LATEST%^).
+    goto CHECK_CADDY
+)
+
+:: Prompt for Ollama update
+echo.
+echo --------------------------------------------------------
+echo [!] New Ollama update available: %OLLAMA_LATEST%
+echo     Press Y to update now
+echo     Press N to skip
+echo     Default: Y after 5 seconds
+echo --------------------------------------------------------
+choice /c YN /t 5 /d Y /m "Do you want to update Ollama now?"
+
+if errorlevel 2 (
+    echo Skipping Ollama update.
+    goto CHECK_CADDY
+)
+
+:DOWNLOAD_OLLAMA
+echo Downloading Ollama %OLLAMA_LATEST%...
+curl -L --progress-bar -o "%BASE%ollama-windows-amd64.zip" "https://github.com/ollama/ollama/releases/download/%OLLAMA_LATEST%/ollama-windows-amd64.zip"
+curl -L --progress-bar -o "%BASE%ollama-windows-amd64-rocm.zip" "https://github.com/ollama/ollama/releases/download/%OLLAMA_LATEST%/ollama-windows-amd64-rocm.zip"
+
+powershell -NoProfile -Command "Expand-Archive -Path '%BASE%ollama-windows-amd64.zip' -DestinationPath '%BASE%servers' -Force"
+powershell -NoProfile -Command "Expand-Archive -Path '%BASE%ollama-windows-amd64-rocm.zip' -DestinationPath '%BASE%servers' -Force"
+
+del /q "%BASE%ollama-windows-amd64.zip" "%BASE%ollama-windows-amd64-rocm.zip"
+del /q "%BASE%servers\.downloaded_ollama_*" 2>nul
+echo. > "%OLLAMA_SENTINEL%"
+echo Ollama update complete.
+echo.
+
+:: ========================================
+::    FETCH LATEST CADDY VERSION
+:: ========================================
+:CHECK_CADDY
+echo Checking for latest Caddy version...
+for /f "delims=" %%I in ('powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $r = Invoke-RestMethod -Uri 'https://api.github.com/repos/caddyserver/caddy/releases/latest'; $r.tag_name.TrimStart('v') "') do set "CADDY_LATEST=%%I"
+
+if "%CADDY_LATEST%"=="" (
+    echo [!] Failed to fetch Caddy version from GitHub. Skipping check...
+    goto START_FLOW
+)
+
+set "CADDY_SENTINEL=%BASE%servers\.downloaded_caddy_%CADDY_LATEST%"
+
+:: Check if Caddy has EVER been downloaded
+dir /b "%BASE%servers\.downloaded_caddy_*" >nul 2>&1
+if errorlevel 1 (
+    echo [Setup] First run: Auto-downloading Caddy v%CADDY_LATEST%...
+    goto DOWNLOAD_CADDY
+)
+
+:: Check if already up to date
+if exist "%CADDY_SENTINEL%" (
+    echo Caddy is up to date ^(v%CADDY_LATEST%^).
+    goto START_FLOW
+)
+
+:: Prompt for Caddy update
+echo.
+echo --------------------------------------------------------
+echo [!] New Caddy update available: v%CADDY_LATEST%
+echo     Press Y to update now
+echo     Press N to skip
+echo     Default: Y after 5 seconds
+echo --------------------------------------------------------
+choice /c YN /t 5 /d Y /m "Do you want to update Caddy now?"
+if errorlevel 2 (
+    echo Skipping Caddy update.
+    goto START_FLOW
+)
+
+:DOWNLOAD_CADDY
+echo Downloading Caddy v%CADDY_LATEST%...
+:: FIX: Download as .zip instead of writing over caddy.exe directly
+curl -L --progress-bar -o "%BASE%caddy.zip" "https://github.com/caddyserver/caddy/releases/download/v%CADDY_LATEST%/caddy_%CADDY_LATEST%_windows_amd64.zip"
+
+if errorlevel 1 (
+    echo [!] Failed to download Caddy.
+    pause
+    exit /b 1
+)
+
+:: FIX: Extract the zip contents to the servers folder
+echo Extracting Caddy...
+powershell -NoProfile -Command "Expand-Archive -Path '%BASE%caddy.zip' -DestinationPath '%BASE%servers' -Force"
+
+:: FIX: Clean up the temporary zip file
+del /q "%BASE%caddy.zip"
+
+del /q "%BASE%servers\.downloaded_caddy_*" 2>nul
+echo. > "%CADDY_SENTINEL%"
+echo Caddy update complete.
+
 
 :: ========================================
 ::   CHECK FILES EXIST
