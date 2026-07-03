@@ -147,6 +147,9 @@ if errorlevel 1 (
 echo Extracting Caddy...
 powershell -NoProfile -Command "Expand-Archive -Path '%BASE%caddy.zip' -DestinationPath '%BASE%servers' -Force"
 
+if exist "%BASE%servers\Caddy_README.md" del /q "%BASE%servers\Caddy_README.md"
+if exist "%BASE%servers\README.md" ren "%BASE%servers\README.md" "Caddy_README.md"
+
 :: FIX: Clean up the temporary zip file
 del /q "%BASE%caddy.zip"
 
