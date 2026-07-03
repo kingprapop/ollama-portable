@@ -157,7 +157,7 @@ del /q "%BASE%servers\.downloaded_caddy_*" 2>nul
 echo. > "%CADDY_SENTINEL%"
 echo Caddy update complete.
 
-
+:START_FLOW
 :: ========================================
 ::   CHECK FILES EXIST
 :: ========================================
